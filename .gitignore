@@ -222,5 +222,6 @@ data_metadata.json
 supabase_utils/
 scripts/upload_to_supabase.py
 scripts/check_supabase_setup.py
+scripts/create_latest_subset.py
 requirements-server.txt
 SUPABASE_SETUP.md
