@@ -224,5 +224,11 @@ scripts/upload_to_supabase.py
 scripts/check_supabase_setup.py
 scripts/create_latest_subset.py
 scripts/convert_trades_to_parquet.py
+scripts/server_update.py
+scripts/run_update_cron.sh
 requirements-server.txt
 SUPABASE_SETUP.md
+CRON_SETUP.md
+
+# Server logs
+logs/
