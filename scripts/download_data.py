@@ -39,7 +39,8 @@ FILES_TO_DOWNLOAD = {
     'trades': {
         'url': f'{BASE_URL}/latest_10000000_trades.parquet',
         'path': PROJECT_ROOT / 'processed' / 'latest_10000000_trades.parquet',
-        'description': 'Latest 10M trades (~7 days of data)'
+        'description': 'Latest 10M trades (~7 days of data)',
+        'chunked': True  # Check for chunks first
     },
     'metadata': {
         'url': f'{BASE_URL}/metadata.json',
@@ -67,6 +68,126 @@ def parse_args():
         help='Force re-download even if files exist'
     )
     return parser.parse_args()
+
+
+def download_chunked_file(base_url: str, destination: Path, description: str, force: bool = False) -> bool:
+    """Download and reassemble a chunked file.
+
+    Args:
+        base_url: Base URL for file storage
+        destination: Local file path to save reassembled file
+        description: Description for progress display
+        force: Force download even if file exists
+
+    Returns:
+        True if downloaded and reassembled successfully, False otherwise
+    """
+    import json
+
+    # Check if file already exists
+    if destination.exists() and not force:
+        size_mb = destination.stat().st_size / (1024 * 1024)
+        print(f"   ℹ️  File exists: {destination.name} ({size_mb:.1f} MB)")
+        print(f"      Use --force to re-download")
+        return True
+
+    # Try to download chunk manifest first
+    manifest_url = f'{base_url}/trades_chunks_manifest.json'
+
+    try:
+        print(f"📥 Downloading: {description} (chunked)")
+        print(f"   Checking for chunks manifest...")
+
+        response = requests.get(manifest_url, timeout=30)
+        response.raise_for_status()
+
+        manifest = response.json()
+        num_chunks = manifest['num_chunks']
+
+        print(f"   Found {num_chunks} chunks ({manifest['total_size'] / (1024**2):.1f} MB total)")
+
+        # Create parent directory
+        destination.parent.mkdir(parents=True, exist_ok=True)
+
+        # Download chunks
+        chunk_files = []
+        for chunk_info in manifest['chunks']:
+            chunk_filename = chunk_info['filename']
+            chunk_url = f'{base_url}/{chunk_filename}'
+            chunk_path = destination.parent / chunk_filename
+
+            chunk_num = chunk_info['index']
+            chunk_size_mb = chunk_info['size'] / (1024 * 1024)
+
+            print(f"\n   [{chunk_num}/{num_chunks}] Downloading {chunk_filename} ({chunk_size_mb:.1f} MB)")
+
+            # Download chunk
+            try:
+                chunk_response = requests.get(chunk_url, stream=True, timeout=30)
+                chunk_response.raise_for_status()
+
+                total_size = int(chunk_response.headers.get('content-length', 0))
+
+                with open(chunk_path, 'wb') as f, tqdm(
+                    desc=f"Chunk {chunk_num}",
+                    total=total_size,
+                    unit='B',
+                    unit_scale=True,
+                    unit_divisor=1024,
+                ) as pbar:
+                    for data in chunk_response.iter_content(chunk_size=8192):
+                        if data:
+                            f.write(data)
+                            pbar.update(len(data))
+
+                chunk_files.append(chunk_path)
+
+            except Exception as e:
+                print(f"   ❌ Failed to download {chunk_filename}: {e}")
+                # Clean up downloaded chunks
+                for cf in chunk_files:
+                    if cf.exists():
+                        cf.unlink()
+                return False
+
+        # Reassemble chunks
+        print(f"\n📦 Reassembling {num_chunks} chunks...")
+        try:
+            with open(destination, 'wb') as outfile:
+                for chunk_path in chunk_files:
+                    with open(chunk_path, 'rb') as chunk_file:
+                        outfile.write(chunk_file.read())
+
+            # Verify size
+            final_size = destination.stat().st_size
+            expected_size = manifest['total_size']
+
+            if final_size != expected_size:
+                print(f"   ⚠️  Warning: Size mismatch (got {final_size}, expected {expected_size})")
+            else:
+                print(f"   ✅ Verified size: {final_size / (1024**2):.1f} MB")
+
+        finally:
+            # Clean up chunk files
+            for chunk_path in chunk_files:
+                if chunk_path.exists():
+                    chunk_path.unlink()
+
+        size_mb = destination.stat().st_size / (1024 * 1024)
+        print(f"✅ Downloaded and reassembled: {destination.name} ({size_mb:.1f} MB)\n")
+        return True
+
+    except requests.exceptions.HTTPError as e:
+        if e.response.status_code == 404:
+            # No manifest found, try downloading as single file
+            print(f"   No chunks found, trying single file download...")
+            return False
+        else:
+            print(f"❌ Download failed: {e}\n")
+            return False
+    except Exception as e:
+        print(f"❌ Download failed: {e}\n")
+        return False
 
 
 def download_file(url: str, destination: Path, description: str, force: bool = False) -> bool:
@@ -154,12 +275,31 @@ def main():
         file_info = FILES_TO_DOWNLOAD[file_key]
 
         print(f"[{i}/{len(files_to_get)}]")
-        success = download_file(
-            url=file_info['url'],
-            destination=file_info['path'],
-            description=file_info['description'],
-            force=args.force
-        )
+
+        # Try chunked download first if supported
+        if file_info.get('chunked', False):
+            success = download_chunked_file(
+                base_url=BASE_URL,
+                destination=file_info['path'],
+                description=file_info['description'],
+                force=args.force
+            )
+
+            # If chunked download failed (no chunks), fallback to regular download
+            if not success:
+                success = download_file(
+                    url=file_info['url'],
+                    destination=file_info['path'],
+                    description=file_info['description'],
+                    force=args.force
+                )
+        else:
+            success = download_file(
+                url=file_info['url'],
+                destination=file_info['path'],
+                description=file_info['description'],
+                force=args.force
+            )
 
         if success:
             success_count += 1
