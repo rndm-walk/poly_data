@@ -234,3 +234,5 @@ CRON_SETUP.md
 
 # Server logs
 logs/
+
+backup/
