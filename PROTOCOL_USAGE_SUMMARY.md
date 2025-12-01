@@ -11,7 +11,7 @@ This report analyzes the DeFi protocol usage patterns of 12 top Parlay traders o
 ### Key Findings
 
 - **Total Users Analyzed:** 12 parlay traders
-- **Protocol Diversity:** Ranges from 1 to 72 different protocols per user
+- **Protocol Diversity:** Ranges from 0 to 71 different protocols per user
 - **Transaction Volume:** Millions of dollars in DeFi activity
 - **Blockchain Ecosystems:** Polygon, Ethereum, Arbitrum, Base, Optimism, Blast, Avalanche
 - **Most Common Protocol Types:** DEX, Lending, Bridges, DEX Aggregators
@@ -24,13 +24,12 @@ This report analyzes the DeFi protocol usage patterns of 12 top Parlay traders o
 **Proxy Wallet:** `0x662ce90c51d613a2975a536272e477ab7c38bfe7`
 **Main Wallet:** `0xc3060219B14df14dc7f139066adF64638057B51f`
 **Parlay Volume:** $208,040.57
-**Protocols Used:** 3
+**Protocols Used:** 2
 **Transaction Count:** 1,000
 
 **Top Protocols:**
-1. Unknown (42 interactions, $518.54)
-2. Relay.link - Infrastructure/Relayer (9 interactions, $742.23)
-3. Chainlink Functions - Oracle (1 interaction, $3.08)
+1. Relay.link - Infrastructure/Relayer (9 interactions, $742.23)
+2. Chainlink Functions - Oracle (1 interaction, $3.08)
 
 **Analysis:** Minimal DeFi user focused primarily on Polymarket trading. Uses infrastructure protocols for transaction relaying.
 
@@ -40,7 +39,7 @@ This report analyzes the DeFi protocol usage patterns of 12 top Parlay traders o
 **Proxy Wallet:** `0xfcf2378f20cf408d077c21e731272f21cccea469`
 **Main Wallet:** `0x1881ad6e231a14a8be0f9ae6f9efd8f3cfb09919`
 **Parlay Volume:** $174,877.62
-**Protocols Used:** 72
+**Protocols Used:** 71
 **Transaction Count:** 1,000
 
 **Top Protocols:**
@@ -83,7 +82,7 @@ This report analyzes the DeFi protocol usage patterns of 12 top Parlay traders o
 **Proxy Wallet:** `0x06e8cb40376ff9f06d926e71a0740821f1914675`
 **Main Wallet:** `0xCF3c440B908Ed564245E79452E1e81A259d6f584`
 **Parlay Volume:** $158,851.23
-**Protocols Used:** 21
+**Protocols Used:** 20
 **Transaction Count:** 1,000
 
 **Top Protocols:**
@@ -111,7 +110,7 @@ This report analyzes the DeFi protocol usage patterns of 12 top Parlay traders o
 **Proxy Wallet:** `0x8f053ac26c46b27f304cb51ae35dc6f677e3c0b8`
 **Main Wallet:** `0x0C369571604d68B45d78943f51811938dd4EDD2E`
 **Parlay Volume:** $90,435.38
-**Protocols Used:** 10
+**Protocols Used:** 9
 **Transaction Count:** 402
 
 **Top Protocols:**
@@ -145,13 +144,13 @@ This report analyzes the DeFi protocol usage patterns of 12 top Parlay traders o
 **Proxy Wallet:** `0xc02147dee42356b7a4edbb1c35ac4ffa95f61fa8`
 **Main Wallet:** `0x253da8157571bae06d6cf750eeb1b26830a43307`
 **Parlay Volume:** $85,988.82
-**Protocols Used:** 1
+**Protocols Used:** 0
 **Transaction Count:** 1,000
 
 **Top Protocols:**
-1. Unknown (22 interactions, $97,537.72)
+None (only unidentified contracts)
 
-**Analysis:** Very minimal DeFi footprint despite high trading volume. Focused trader with limited blockchain diversification outside Polymarket.
+**Analysis:** Very minimal DeFi footprint despite high trading volume. Focused trader with limited blockchain diversification outside Polymarket. Only interacts with unidentified contracts.
 
 ---
 
@@ -159,7 +158,7 @@ This report analyzes the DeFi protocol usage patterns of 12 top Parlay traders o
 **Proxy Wallet:** `0x9c704d41ef1ae81a2c8ad91cfee08e404c00f9e1`
 **Main Wallet:** `0xE4e26c843F5bC1C5FC610F8BD4830C677298b1f4`
 **Parlay Volume:** $81,929.36
-**Protocols Used:** 14
+**Protocols Used:** 13
 **Transaction Count:** 284
 
 **Top Protocols:**
@@ -179,7 +178,7 @@ This report analyzes the DeFi protocol usage patterns of 12 top Parlay traders o
 **Proxy Wallet:** `0x24c8cf69a0e0a17eee21f69d29752bfa32e823e1`
 **Main Wallet:** `0xF6aE6dF55d8108B2f22A13e14CFbdCdf62630439`
 **Parlay Volume:** $80,067.52
-**Protocols Used:** 17
+**Protocols Used:** 16
 **Transaction Count:** 716
 
 **Top Protocols:**
@@ -201,7 +200,7 @@ This report analyzes the DeFi protocol usage patterns of 12 top Parlay traders o
 **Proxy Wallet:** `0x15691449477aa15e72cdff51c7b6687b58bc4e0c`
 **Main Wallet:** `0xfc44ff1000cde724dc64efd9499c14b3d845c533`
 **Parlay Volume:** $79,755.46
-**Protocols Used:** 9
+**Protocols Used:** 8
 **Transaction Count:** 583
 
 **Top Protocols:**
@@ -212,7 +211,7 @@ This report analyzes the DeFi protocol usage patterns of 12 top Parlay traders o
 5. Compound - Lending (3 interactions, $59,854.27)
 6. QuickSwap - DEX (2 interactions, $59,994.36)
 
-**Analysis:** Heavy Wormhole bridge user with $733K in cross-chain transactions. Significant DEX aggregator usage. Large unknown contract interactions ($1.8M).
+**Analysis:** Heavy Wormhole bridge user with $733K in cross-chain transactions. Significant DEX aggregator usage. Large volume of unidentified contract interactions ($1.8M).
 
 ---
 
@@ -220,7 +219,7 @@ This report analyzes the DeFi protocol usage patterns of 12 top Parlay traders o
 **Proxy Wallet:** `0x7c873c11e40ceaaba6385322d49f565b66659bd4`
 **Main Wallet:** `0xc536633ff12ee52e280b2af2594031060c5aaf41`
 **Parlay Volume:** $65,516.21
-**Protocols Used:** 71
+**Protocols Used:** 70
 **Transaction Count:** 1,000
 
 **Top Protocols:**
@@ -296,12 +295,12 @@ This report analyzes the DeFi protocol usage patterns of 12 top Parlay traders o
 ### User Archetypes
 
 **1. Polymarket-Focused Minimalists (4 users)**
-- Low protocol diversity (1-3 protocols)
+- Low protocol diversity (0-3 protocols)
 - Minimal DeFi engagement
 - Example: 0x12d6cccfc7470a3f4bafc53599a4779cbf2cf2a8
 
 **2. Sophisticated Multi-Chain Traders (4 users)**
-- High protocol diversity (14-72 protocols)
+- High protocol diversity (13-71 protocols)
 - Cross-chain bridge usage
 - Examples: 0xfcf2378f20cf408d077c21e731272f21cccea469, 0x7c873c11e40ceaaba6385322d49f565b66659bd4
 
@@ -323,11 +322,11 @@ This report analyzes the DeFi protocol usage patterns of 12 top Parlay traders o
 
 | Rank | Proxy Wallet | Parlay Volume | DeFi Protocols | Est. DeFi Volume |
 |------|--------------|---------------|----------------|------------------|
-| 1 | 0xfcf2378f20cf408d077c21e731272f21cccea469 | $174,877 | 72 | $143,000+ |
+| 1 | 0xfcf2378f20cf408d077c21e731272f21cccea469 | $174,877 | 71 | $143,000+ |
 | 2 | 0xc8ab97a9089a9ff7e6ef0688e6e591a066946418 | $173,704 | 5 | $12,300,000+ |
-| 3 | 0x15691449477aa15e72cdff51c7b6687b58bc4e0c | $79,755 | 9 | $3,100,000+ |
-| 4 | 0x24c8cf69a0e0a17eee21f69d29752bfa32e823e1 | $80,067 | 17 | $2,100,000+ |
-| 5 | 0x06e8cb40376ff9f06d926e71a0740821f1914675 | $158,851 | 21 | $1,100,000+ |
+| 3 | 0x15691449477aa15e72cdff51c7b6687b58bc4e0c | $79,755 | 8 | $3,100,000+ |
+| 4 | 0x24c8cf69a0e0a17eee21f69d29752bfa32e823e1 | $80,067 | 16 | $2,100,000+ |
+| 5 | 0x06e8cb40376ff9f06d926e71a0740821f1914675 | $158,851 | 20 | $1,100,000+ |
 
 **Note:** DeFi volume significantly exceeds Polymarket parlay volume for most sophisticated traders.
 
@@ -365,7 +364,7 @@ This report analyzes the DeFi protocol usage patterns of 12 top Parlay traders o
 
 9. **UMA Connection**: 4 users heavily use UMA, likely for Polymarket's oracle infrastructure
 
-10. **Sophistication Spectrum**: Users range from minimal DeFi (3 protocols) to power users (72 protocols)
+10. **Sophistication Spectrum**: Users range from minimal DeFi (0 protocols) to power users (71 protocols)
 
 ---
 
