@@ -875,6 +875,53 @@
         "chain": "ethereum"
     },
     {
+        "id": "0x09af356597fbf134181a3dfc2d65e1955c6734a1d7f361c117dadd22d7b0be06_122",
+        "transactionHash": "0x09af356597fbf134181a3dfc2d65e1955c6734a1d7f361c117dadd22d7b0be06",
+        "fromAddress": {
+            "address": "0x1881ad6e231a14A8Be0f9AE6f9EFd8f3CFb09919",
+            "chain": "polygon",
+            "isUserAddress": false,
+            "contract": false
+        },
+        "fromIsContract": false,
+        "toAddress": {
+            "address": "0x31083a78E11B18e450fd139F9ABEa98CD53181B7",
+            "chain": "polygon",
+            "arkhamEntity": {
+                "name": "Uniswap",
+                "note": "",
+                "id": "uniswap",
+                "type": "dex",
+                "service": null,
+                "addresses": null,
+                "website": "https://uniswap.org",
+                "twitter": "https://twitter.com/Uniswap",
+                "crunchbase": "https://www.crunchbase.com/organization/uniswap-labs",
+                "linkedin": "https://www.linkedin.com/company/uniswaporg"
+            },
+            "arkhamLabel": {
+                "name": "V3 Pool",
+                "address": "0x31083a78E11B18e450fd139F9ABEa98CD53181B7",
+                "chainType": "evm"
+            },
+            "isUserAddress": false,
+            "contract": true
+        },
+        "toIsContract": true,
+        "tokenAddress": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
+        "type": "",
+        "blockTimestamp": "2025-05-19T14:54:08Z",
+        "blockNumber": 71712271,
+        "blockHash": "0x509c2d1763935b9a0456f6f48d0222eb94a1537b7115e2a2f0f8f48768d879e3",
+        "tokenName": "USD Coin",
+        "tokenSymbol": "USDC",
+        "tokenDecimals": 6,
+        "unitValue": 71.582166,
+        "tokenId": "usd-coin",
+        "historicalUSD": 71.582166,
+        "chain": "polygon"
+    },
+    {
         "id": "call_0x09af356597fbf134181a3dfc2d65e1955c6734a1d7f361c117dadd22d7b0be06_9",
         "transactionHash": "0x09af356597fbf134181a3dfc2d65e1955c6734a1d7f361c117dadd22d7b0be06",
         "fromAddress": {
@@ -966,53 +1013,6 @@
         "unitValue": 167.025055,
         "tokenId": "usd-coin",
         "historicalUSD": 167.025055,
-        "chain": "polygon"
-    },
-    {
-        "id": "0x09af356597fbf134181a3dfc2d65e1955c6734a1d7f361c117dadd22d7b0be06_122",
-        "transactionHash": "0x09af356597fbf134181a3dfc2d65e1955c6734a1d7f361c117dadd22d7b0be06",
-        "fromAddress": {
-            "address": "0x1881ad6e231a14A8Be0f9AE6f9EFd8f3CFb09919",
-            "chain": "polygon",
-            "isUserAddress": false,
-            "contract": false
-        },
-        "fromIsContract": false,
-        "toAddress": {
-            "address": "0x31083a78E11B18e450fd139F9ABEa98CD53181B7",
-            "chain": "polygon",
-            "arkhamEntity": {
-                "name": "Uniswap",
-                "note": "",
-                "id": "uniswap",
-                "type": "dex",
-                "service": null,
-                "addresses": null,
-                "website": "https://uniswap.org",
-                "twitter": "https://twitter.com/Uniswap",
-                "crunchbase": "https://www.crunchbase.com/organization/uniswap-labs",
-                "linkedin": "https://www.linkedin.com/company/uniswaporg"
-            },
-            "arkhamLabel": {
-                "name": "V3 Pool",
-                "address": "0x31083a78E11B18e450fd139F9ABEa98CD53181B7",
-                "chainType": "evm"
-            },
-            "isUserAddress": false,
-            "contract": true
-        },
-        "toIsContract": true,
-        "tokenAddress": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
-        "type": "",
-        "blockTimestamp": "2025-05-19T14:54:08Z",
-        "blockNumber": 71712271,
-        "blockHash": "0x509c2d1763935b9a0456f6f48d0222eb94a1537b7115e2a2f0f8f48768d879e3",
-        "tokenName": "USD Coin",
-        "tokenSymbol": "USDC",
-        "tokenDecimals": 6,
-        "unitValue": 71.582166,
-        "tokenId": "usd-coin",
-        "historicalUSD": 71.582166,
         "chain": "polygon"
     },
     {
@@ -2306,52 +2306,6 @@
         "chain": "polygon"
     },
     {
-        "id": "call_0xc20bdb146a564454db4da10925a955e10d820d3a13bb20cdaf2734e602ac38ab_1,0,4",
-        "transactionHash": "0xc20bdb146a564454db4da10925a955e10d820d3a13bb20cdaf2734e602ac38ab",
-        "fromAddress": {
-            "address": "0xc590175E458b83680867AFD273527Ff58f74c02b",
-            "chain": "polygon",
-            "arkhamEntity": {
-                "name": "MetaMask",
-                "note": "",
-                "id": "metamask",
-                "type": "dex-aggregator",
-                "service": null,
-                "addresses": null,
-                "website": "https://metamask.io/",
-                "twitter": "https://twitter.com/MetaMask",
-                "crunchbase": "https://www.crunchbase.com/organization/metamask"
-            },
-            "arkhamLabel": {
-                "name": "Swap",
-                "address": "0xc590175E458b83680867AFD273527Ff58f74c02b",
-                "chainType": "evm"
-            },
-            "isUserAddress": false,
-            "contract": true
-        },
-        "fromIsContract": true,
-        "toAddress": {
-            "address": "0x1881ad6e231a14A8Be0f9AE6f9EFd8f3CFb09919",
-            "chain": "polygon",
-            "isUserAddress": false,
-            "contract": false
-        },
-        "toIsContract": false,
-        "tokenAddress": null,
-        "type": "",
-        "blockTimestamp": "2025-03-18T18:39:39Z",
-        "blockNumber": 69209732,
-        "blockHash": "0x6f520aeaf83e6ef772e70b6183e26d9f7a5c3fc515d96b556d7cc51112f30a6d",
-        "tokenName": "Matic Token",
-        "tokenSymbol": "MATIC",
-        "tokenDecimals": 18,
-        "unitValue": 2786.8973408469196,
-        "tokenId": "matic-network",
-        "historicalUSD": 568.5242706354308,
-        "chain": "polygon"
-    },
-    {
         "id": "0xc20bdb146a564454db4da10925a955e10d820d3a13bb20cdaf2734e602ac38ab_113",
         "transactionHash": "0xc20bdb146a564454db4da10925a955e10d820d3a13bb20cdaf2734e602ac38ab",
         "fromAddress": {
@@ -2395,6 +2349,52 @@
         "unitValue": 574.338586,
         "tokenId": "bridged-usdc-polygon-pos-bridge",
         "historicalUSD": 574.338586,
+        "chain": "polygon"
+    },
+    {
+        "id": "call_0xc20bdb146a564454db4da10925a955e10d820d3a13bb20cdaf2734e602ac38ab_1,0,4",
+        "transactionHash": "0xc20bdb146a564454db4da10925a955e10d820d3a13bb20cdaf2734e602ac38ab",
+        "fromAddress": {
+            "address": "0xc590175E458b83680867AFD273527Ff58f74c02b",
+            "chain": "polygon",
+            "arkhamEntity": {
+                "name": "MetaMask",
+                "note": "",
+                "id": "metamask",
+                "type": "dex-aggregator",
+                "service": null,
+                "addresses": null,
+                "website": "https://metamask.io/",
+                "twitter": "https://twitter.com/MetaMask",
+                "crunchbase": "https://www.crunchbase.com/organization/metamask"
+            },
+            "arkhamLabel": {
+                "name": "Swap",
+                "address": "0xc590175E458b83680867AFD273527Ff58f74c02b",
+                "chainType": "evm"
+            },
+            "isUserAddress": false,
+            "contract": true
+        },
+        "fromIsContract": true,
+        "toAddress": {
+            "address": "0x1881ad6e231a14A8Be0f9AE6f9EFd8f3CFb09919",
+            "chain": "polygon",
+            "isUserAddress": false,
+            "contract": false
+        },
+        "toIsContract": false,
+        "tokenAddress": null,
+        "type": "",
+        "blockTimestamp": "2025-03-18T18:39:39Z",
+        "blockNumber": 69209732,
+        "blockHash": "0x6f520aeaf83e6ef772e70b6183e26d9f7a5c3fc515d96b556d7cc51112f30a6d",
+        "tokenName": "Matic Token",
+        "tokenSymbol": "MATIC",
+        "tokenDecimals": 18,
+        "unitValue": 2786.8973408469196,
+        "tokenId": "matic-network",
+        "historicalUSD": 568.5242706354308,
         "chain": "polygon"
     },
     {
@@ -2918,7 +2918,7 @@
         "chain": "polygon"
     },
     {
-        "id": "0x43f64804022f81de90bd09154489f960569caff0c45a78f7f5f650814cb101bc_381",
+        "id": "0x43f64804022f81de90bd09154489f960569caff0c45a78f7f5f650814cb101bc_375",
         "transactionHash": "0x43f64804022f81de90bd09154489f960569caff0c45a78f7f5f650814cb101bc",
         "fromAddress": {
             "address": "0x0000000000000000000000000000000000000000",
@@ -2947,9 +2947,9 @@
         "tokenName": "USD Coin (PoS)",
         "tokenSymbol": "USDC",
         "tokenDecimals": 6,
-        "unitValue": 46.88796,
+        "unitValue": 46.873985,
         "tokenId": "bridged-usdc-polygon-pos-bridge",
-        "historicalUSD": 46.88796,
+        "historicalUSD": 46.873985,
         "chain": "polygon"
     },
     {
@@ -2988,7 +2988,7 @@
         "chain": "polygon"
     },
     {
-        "id": "0x43f64804022f81de90bd09154489f960569caff0c45a78f7f5f650814cb101bc_375",
+        "id": "0x43f64804022f81de90bd09154489f960569caff0c45a78f7f5f650814cb101bc_381",
         "transactionHash": "0x43f64804022f81de90bd09154489f960569caff0c45a78f7f5f650814cb101bc",
         "fromAddress": {
             "address": "0x0000000000000000000000000000000000000000",
@@ -3017,9 +3017,9 @@
         "tokenName": "USD Coin (PoS)",
         "tokenSymbol": "USDC",
         "tokenDecimals": 6,
-        "unitValue": 46.873985,
+        "unitValue": 46.88796,
         "tokenId": "bridged-usdc-polygon-pos-bridge",
-        "historicalUSD": 46.873985,
+        "historicalUSD": 46.88796,
         "chain": "polygon"
     },
     {
@@ -16884,41 +16884,6 @@
         "chain": "polygon"
     },
     {
-        "id": "0x828557298c8ef6236027f2e9e5719db9f385a929d47a22cbd904b823075aa849_886",
-        "transactionHash": "0x828557298c8ef6236027f2e9e5719db9f385a929d47a22cbd904b823075aa849",
-        "fromAddress": {
-            "address": "0x0000000000000000000000000000000000000000",
-            "chain": "polygon",
-            "arkhamLabel": {
-                "name": "Null Address",
-                "address": "0x0000000000000000000000000000000000000000",
-                "chainType": "evm"
-            },
-            "isUserAddress": false,
-            "contract": false
-        },
-        "fromIsContract": false,
-        "toAddress": {
-            "address": "0x1881ad6e231a14A8Be0f9AE6f9EFd8f3CFb09919",
-            "chain": "polygon",
-            "isUserAddress": false,
-            "contract": false
-        },
-        "toIsContract": false,
-        "tokenAddress": "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
-        "type": "",
-        "blockTimestamp": "2025-02-18T22:30:42Z",
-        "blockNumber": 68090688,
-        "blockHash": "0x94f182ce10d52a443e0e9278fa97ac8a20691206fd8caab2b266f7b3aa3703c8",
-        "tokenName": "USD Coin (PoS)",
-        "tokenSymbol": "USDC",
-        "tokenDecimals": 6,
-        "unitValue": 1003.225269,
-        "tokenId": "bridged-usdc-polygon-pos-bridge",
-        "historicalUSD": 1003.225269,
-        "chain": "polygon"
-    },
-    {
         "id": "0x828557298c8ef6236027f2e9e5719db9f385a929d47a22cbd904b823075aa849_884",
         "transactionHash": "0x828557298c8ef6236027f2e9e5719db9f385a929d47a22cbd904b823075aa849",
         "fromAddress": {
@@ -16954,49 +16919,38 @@
         "chain": "polygon"
     },
     {
-        "id": "0xe00fd9cfcae25013e54da504fe3cd26f879ae2b09ab9e69966929406c4cb8894_183",
-        "transactionHash": "0xe00fd9cfcae25013e54da504fe3cd26f879ae2b09ab9e69966929406c4cb8894",
+        "id": "0x828557298c8ef6236027f2e9e5719db9f385a929d47a22cbd904b823075aa849_886",
+        "transactionHash": "0x828557298c8ef6236027f2e9e5719db9f385a929d47a22cbd904b823075aa849",
         "fromAddress": {
-            "address": "0x1881ad6e231a14A8Be0f9AE6f9EFd8f3CFb09919",
+            "address": "0x0000000000000000000000000000000000000000",
             "chain": "polygon",
+            "arkhamLabel": {
+                "name": "Null Address",
+                "address": "0x0000000000000000000000000000000000000000",
+                "chainType": "evm"
+            },
             "isUserAddress": false,
             "contract": false
         },
         "fromIsContract": false,
         "toAddress": {
-            "address": "0xc590175E458b83680867AFD273527Ff58f74c02b",
+            "address": "0x1881ad6e231a14A8Be0f9AE6f9EFd8f3CFb09919",
             "chain": "polygon",
-            "arkhamEntity": {
-                "name": "MetaMask",
-                "note": "",
-                "id": "metamask",
-                "type": "dex-aggregator",
-                "service": null,
-                "addresses": null,
-                "website": "https://metamask.io/",
-                "twitter": "https://twitter.com/MetaMask",
-                "crunchbase": "https://www.crunchbase.com/organization/metamask"
-            },
-            "arkhamLabel": {
-                "name": "Swap",
-                "address": "0xc590175E458b83680867AFD273527Ff58f74c02b",
-                "chainType": "evm"
-            },
             "isUserAddress": false,
-            "contract": true
+            "contract": false
         },
-        "toIsContract": true,
-        "tokenAddress": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
+        "toIsContract": false,
+        "tokenAddress": "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
         "type": "",
-        "blockTimestamp": "2025-02-18T22:25:22Z",
-        "blockNumber": 68090538,
-        "blockHash": "0x9e82fe60cf083219e3e0df1149903b52453809e1b27db75fd12d54bce91e6b30",
-        "tokenName": "USD Coin",
+        "blockTimestamp": "2025-02-18T22:30:42Z",
+        "blockNumber": 68090688,
+        "blockHash": "0x94f182ce10d52a443e0e9278fa97ac8a20691206fd8caab2b266f7b3aa3703c8",
+        "tokenName": "USD Coin (PoS)",
         "tokenSymbol": "USDC",
         "tokenDecimals": 6,
-        "unitValue": 5604.455161,
-        "tokenId": "usd-coin",
-        "historicalUSD": 5604.455161,
+        "unitValue": 1003.225269,
+        "tokenId": "bridged-usdc-polygon-pos-bridge",
+        "historicalUSD": 1003.225269,
         "chain": "polygon"
     },
     {
@@ -17043,6 +16997,52 @@
         "unitValue": 5555.127887,
         "tokenId": "bridged-usdc-polygon-pos-bridge",
         "historicalUSD": 5555.127887,
+        "chain": "polygon"
+    },
+    {
+        "id": "0xe00fd9cfcae25013e54da504fe3cd26f879ae2b09ab9e69966929406c4cb8894_183",
+        "transactionHash": "0xe00fd9cfcae25013e54da504fe3cd26f879ae2b09ab9e69966929406c4cb8894",
+        "fromAddress": {
+            "address": "0x1881ad6e231a14A8Be0f9AE6f9EFd8f3CFb09919",
+            "chain": "polygon",
+            "isUserAddress": false,
+            "contract": false
+        },
+        "fromIsContract": false,
+        "toAddress": {
+            "address": "0xc590175E458b83680867AFD273527Ff58f74c02b",
+            "chain": "polygon",
+            "arkhamEntity": {
+                "name": "MetaMask",
+                "note": "",
+                "id": "metamask",
+                "type": "dex-aggregator",
+                "service": null,
+                "addresses": null,
+                "website": "https://metamask.io/",
+                "twitter": "https://twitter.com/MetaMask",
+                "crunchbase": "https://www.crunchbase.com/organization/metamask"
+            },
+            "arkhamLabel": {
+                "name": "Swap",
+                "address": "0xc590175E458b83680867AFD273527Ff58f74c02b",
+                "chainType": "evm"
+            },
+            "isUserAddress": false,
+            "contract": true
+        },
+        "toIsContract": true,
+        "tokenAddress": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
+        "type": "",
+        "blockTimestamp": "2025-02-18T22:25:22Z",
+        "blockNumber": 68090538,
+        "blockHash": "0x9e82fe60cf083219e3e0df1149903b52453809e1b27db75fd12d54bce91e6b30",
+        "tokenName": "USD Coin",
+        "tokenSymbol": "USDC",
+        "tokenDecimals": 6,
+        "unitValue": 5604.455161,
+        "tokenId": "usd-coin",
+        "historicalUSD": 5604.455161,
         "chain": "polygon"
     },
     {
@@ -18314,6 +18314,98 @@
         "chain": "arbitrum_one"
     },
     {
+        "id": "call_0x3585d680142636c2ebc215c65d891cefaf166e942b15015443a078f317636768_1,0,5",
+        "transactionHash": "0x3585d680142636c2ebc215c65d891cefaf166e942b15015443a078f317636768",
+        "fromAddress": {
+            "address": "0xc590175E458b83680867AFD273527Ff58f74c02b",
+            "chain": "polygon",
+            "arkhamEntity": {
+                "name": "MetaMask",
+                "note": "",
+                "id": "metamask",
+                "type": "dex-aggregator",
+                "service": null,
+                "addresses": null,
+                "website": "https://metamask.io/",
+                "twitter": "https://twitter.com/MetaMask",
+                "crunchbase": "https://www.crunchbase.com/organization/metamask"
+            },
+            "arkhamLabel": {
+                "name": "Swap",
+                "address": "0xc590175E458b83680867AFD273527Ff58f74c02b",
+                "chainType": "evm"
+            },
+            "isUserAddress": false,
+            "contract": true
+        },
+        "fromIsContract": true,
+        "toAddress": {
+            "address": "0x1881ad6e231a14A8Be0f9AE6f9EFd8f3CFb09919",
+            "chain": "polygon",
+            "isUserAddress": false,
+            "contract": false
+        },
+        "toIsContract": false,
+        "tokenAddress": null,
+        "type": "",
+        "blockTimestamp": "2025-02-17T21:05:12Z",
+        "blockNumber": 68048115,
+        "blockHash": "0x7de52f594fe6b181d16da5f4d334efd52ac1094286d6a06cf27bd7d753dc40df",
+        "tokenName": "Matic Token",
+        "tokenSymbol": "MATIC",
+        "tokenDecimals": 18,
+        "unitValue": 173.62839438245015,
+        "tokenId": "matic-network",
+        "historicalUSD": 55.36853231301391,
+        "chain": "polygon"
+    },
+    {
+        "id": "call_0x3585d680142636c2ebc215c65d891cefaf166e942b15015443a078f317636768_1,0,5",
+        "transactionHash": "0x3585d680142636c2ebc215c65d891cefaf166e942b15015443a078f317636768",
+        "fromAddress": {
+            "address": "0xc590175E458b83680867AFD273527Ff58f74c02b",
+            "chain": "polygon",
+            "arkhamEntity": {
+                "name": "MetaMask",
+                "note": "",
+                "id": "metamask",
+                "type": "dex-aggregator",
+                "service": null,
+                "addresses": null,
+                "website": "https://metamask.io/",
+                "twitter": "https://twitter.com/MetaMask",
+                "crunchbase": "https://www.crunchbase.com/organization/metamask"
+            },
+            "arkhamLabel": {
+                "name": "Swap",
+                "address": "0xc590175E458b83680867AFD273527Ff58f74c02b",
+                "chainType": "evm"
+            },
+            "isUserAddress": false,
+            "contract": true
+        },
+        "fromIsContract": true,
+        "toAddress": {
+            "address": "0x1881ad6e231a14A8Be0f9AE6f9EFd8f3CFb09919",
+            "chain": "polygon",
+            "isUserAddress": false,
+            "contract": false
+        },
+        "toIsContract": false,
+        "tokenAddress": null,
+        "type": "",
+        "blockTimestamp": "2025-02-17T21:05:12Z",
+        "blockNumber": 68048115,
+        "blockHash": "0x7de52f594fe6b181d16da5f4d334efd52ac1094286d6a06cf27bd7d753dc40df",
+        "tokenName": "Matic Token",
+        "tokenSymbol": "MATIC",
+        "tokenDecimals": 18,
+        "unitValue": 173.62839438245015,
+        "tokenId": "matic-network",
+        "historicalUSD": 55.36853231301391,
+        "chain": "polygon"
+    },
+    {
         "id": "0x3585d680142636c2ebc215c65d891cefaf166e942b15015443a078f317636768_243",
         "transactionHash": "0x3585d680142636c2ebc215c65d891cefaf166e942b15015443a078f317636768",
         "fromAddress": {
@@ -18357,98 +18449,6 @@
         "unitValue": 55.879509,
         "tokenId": "polygon-bridged-usdt-polygon",
         "historicalUSD": 55.879509,
-        "chain": "polygon"
-    },
-    {
-        "id": "call_0x3585d680142636c2ebc215c65d891cefaf166e942b15015443a078f317636768_1,0,5",
-        "transactionHash": "0x3585d680142636c2ebc215c65d891cefaf166e942b15015443a078f317636768",
-        "fromAddress": {
-            "address": "0xc590175E458b83680867AFD273527Ff58f74c02b",
-            "chain": "polygon",
-            "arkhamEntity": {
-                "name": "MetaMask",
-                "note": "",
-                "id": "metamask",
-                "type": "dex-aggregator",
-                "service": null,
-                "addresses": null,
-                "website": "https://metamask.io/",
-                "twitter": "https://twitter.com/MetaMask",
-                "crunchbase": "https://www.crunchbase.com/organization/metamask"
-            },
-            "arkhamLabel": {
-                "name": "Swap",
-                "address": "0xc590175E458b83680867AFD273527Ff58f74c02b",
-                "chainType": "evm"
-            },
-            "isUserAddress": false,
-            "contract": true
-        },
-        "fromIsContract": true,
-        "toAddress": {
-            "address": "0x1881ad6e231a14A8Be0f9AE6f9EFd8f3CFb09919",
-            "chain": "polygon",
-            "isUserAddress": false,
-            "contract": false
-        },
-        "toIsContract": false,
-        "tokenAddress": null,
-        "type": "",
-        "blockTimestamp": "2025-02-17T21:05:12Z",
-        "blockNumber": 68048115,
-        "blockHash": "0x7de52f594fe6b181d16da5f4d334efd52ac1094286d6a06cf27bd7d753dc40df",
-        "tokenName": "Matic Token",
-        "tokenSymbol": "MATIC",
-        "tokenDecimals": 18,
-        "unitValue": 173.62839438245015,
-        "tokenId": "matic-network",
-        "historicalUSD": 55.36853231301391,
-        "chain": "polygon"
-    },
-    {
-        "id": "call_0x3585d680142636c2ebc215c65d891cefaf166e942b15015443a078f317636768_1,0,5",
-        "transactionHash": "0x3585d680142636c2ebc215c65d891cefaf166e942b15015443a078f317636768",
-        "fromAddress": {
-            "address": "0xc590175E458b83680867AFD273527Ff58f74c02b",
-            "chain": "polygon",
-            "arkhamEntity": {
-                "name": "MetaMask",
-                "note": "",
-                "id": "metamask",
-                "type": "dex-aggregator",
-                "service": null,
-                "addresses": null,
-                "website": "https://metamask.io/",
-                "twitter": "https://twitter.com/MetaMask",
-                "crunchbase": "https://www.crunchbase.com/organization/metamask"
-            },
-            "arkhamLabel": {
-                "name": "Swap",
-                "address": "0xc590175E458b83680867AFD273527Ff58f74c02b",
-                "chainType": "evm"
-            },
-            "isUserAddress": false,
-            "contract": true
-        },
-        "fromIsContract": true,
-        "toAddress": {
-            "address": "0x1881ad6e231a14A8Be0f9AE6f9EFd8f3CFb09919",
-            "chain": "polygon",
-            "isUserAddress": false,
-            "contract": false
-        },
-        "toIsContract": false,
-        "tokenAddress": null,
-        "type": "",
-        "blockTimestamp": "2025-02-17T21:05:12Z",
-        "blockNumber": 68048115,
-        "blockHash": "0x7de52f594fe6b181d16da5f4d334efd52ac1094286d6a06cf27bd7d753dc40df",
-        "tokenName": "Matic Token",
-        "tokenSymbol": "MATIC",
-        "tokenDecimals": 18,
-        "unitValue": 173.62839438245015,
-        "tokenId": "matic-network",
-        "historicalUSD": 55.36853231301391,
         "chain": "polygon"
     },
     {

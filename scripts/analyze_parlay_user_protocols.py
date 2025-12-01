@@ -6,11 +6,18 @@ beyond Polymarket, using Gemini API for protocol identification.
 
 import json
 import os
+import sys
 from pathlib import Path
 from collections import defaultdict
 from typing import Dict, List, Any
 from dotenv import load_dotenv
 import google.generativeai as genai
+
+# Add scripts directory to path for imports
+sys.path.insert(0, str(Path(__file__).parent))
+
+# Load wallet mappings from single source of truth
+from wallet_mappings import WALLET_MAPPINGS
 
 # Load environment variables
 load_dotenv()
@@ -22,23 +29,6 @@ if not GEMINI_API_KEY:
 
 genai.configure(api_key=GEMINI_API_KEY)
 
-# Wallet mappings from proxy to main wallet (or CEX/source)
-WALLET_MAPPINGS = {
-    "0xf419573877439e31131f83aba0be82e697179728": {"volume": 246703.58982, "source": "CEX, Relay"},
-    "0x3a8651c42ac19aa3e3141531a298abc72f51dea8": {"volume": 224173.946737, "source": "CEX, Binance"},
-    "0x662ce90c51d613a2975a536272e477ab7c38bfe7": {"volume": 208040.569139, "main_wallet": "0xc3060219B14df14dc7f139066adF64638057B51f"},
-    "0xfcf2378f20cf408d077c21e731272f21cccea469": {"volume": 174877.61721599998, "main_wallet": "0x1881ad6e231a14a8be0f9ae6f9efd8f3cfb09919"},
-    "0xc8ab97a9089a9ff7e6ef0688e6e591a066946418": {"volume": 173704.76752, "main_wallet": "0x9483Ca5C6A3BaD47D0AB9bC64bd379dEbD76B0Af"},
-    "0x06e8cb40376ff9f06d926e71a0740821f1914675": {"volume": 158851.230859, "main_wallet": "0xe68a6E87622124F505E17dDfd1927885bBA7Ae88"},
-    "0x1cfc260bfa2b5ae89377863180ca3b4f5c862111": {"volume": 108032.597155, "source": "CEX, Binance"},
-    "0xb10047d6a254b2ebb306d7a7d13bf59171ab6461": {"volume": 99602.45151299999, "source": "CEX, Binance"},
-    "0x8f053ac26c46b27f304cb51ae35dc6f677e3c0b8": {"volume": 90435.38030399999, "main_wallet": "0x0C369571604d68B45d78943f51811938dd4EDD2E"},
-    "0x12d6cccfc7470a3f4bafc53599a4779cbf2cf2a8": {"volume": 87968.263244, "main_wallet": "0x710BE84efbd0dfD4B1a67B9525A778ae5C420ff8"},
-    "0xc02147dee42356b7a4edbb1c35ac4ffa95f61fa8": {"volume": 85988.819683, "main_wallet": "0x1881ad6e231A8Be0f9AE6f9EFd8f3CFb09919"},
-    "0x9c704d41ef1ae81a2c8ad91cfee08e404c00f9e1": {"volume": 81929.363289, "main_wallet": "0xE4e26c843F5bC1C5FC610F8BD4830C677298b1f4"},
-    "0x24c8cf69a0e0a17eee21f69d29752bfa32e823e1": {"volume": 80067.515551, "main_wallet": "0xF6aE6dF55d8108B2f22A13e14CFbdCdf62630439"},
-}
-
 # Known Polymarket contracts to filter out
 POLYMARKET_CONTRACTS = {
     "polymarket", "ctf exchange", "conditional tokens",
@@ -47,7 +37,7 @@ POLYMARKET_CONTRACTS = {
 
 
 class ProtocolAnalyzer:
-    def __init__(self, data_dir: Path, model_name: str = "gemini-2.0-flash-exp"):
+    def __init__(self, data_dir: Path, model_name: str = "gemini-3-pro-preview"):
         self.data_dir = data_dir
         self.model = genai.GenerativeModel(model_name)
         self.wallet_data = {}
@@ -68,7 +58,7 @@ class ProtocolAnalyzer:
         return transactions
 
     def extract_contract_interactions(self, transactions: List[Dict[str, Any]]) -> Dict[str, Any]:
-        """Extract unique contract addresses and their interaction patterns."""
+        """Extract unique contract addresses and their interaction patterns (both outgoing and incoming)."""
         contracts = defaultdict(lambda: {
             "count": 0,
             "chains": set(),
@@ -77,54 +67,101 @@ class ProtocolAnalyzer:
             "entity_names": set(),
             "tags": set(),
             "total_usd": 0,
-            "sample_txs": []
+            "sample_txs": [],
+            "direction": set()  # Track if outgoing, incoming, or both
         })
 
         for tx in transactions:
+            # Check OUTGOING transactions (wallet sending TO a contract/entity)
             to_addr = tx.get("toAddress", {})
             to_contract = to_addr.get("address")
+            to_is_contract = tx.get("toIsContract", False)
+            to_has_entity = to_addr.get("arkhamEntity") or to_addr.get("predictedEntity")
 
-            # Skip if not a contract interaction
-            if not to_contract or not tx.get("toIsContract", False):
-                continue
+            # Check INCOMING transactions (wallet receiving FROM a contract/entity)
+            from_addr = tx.get("fromAddress", {})
+            from_contract = from_addr.get("address")
+            from_is_contract = tx.get("fromIsContract", False)
+            from_has_entity = from_addr.get("arkhamEntity") or from_addr.get("predictedEntity")
 
-            contract_data = contracts[to_contract.lower()]
-            contract_data["count"] += 1
-            contract_data["chains"].add(tx.get("chain", "unknown"))
+            # Process OUTGOING interactions
+            if to_contract and (to_is_contract or to_has_entity):
+                contract_data = contracts[to_contract.lower()]
+                contract_data["count"] += 1
+                contract_data["chains"].add(tx.get("chain", "unknown"))
+                contract_data["direction"].add("outgoing")
 
-            # Extract entity/protocol names
-            if to_addr.get("arkhamEntity"):
-                contract_data["entity_names"].add(to_addr["arkhamEntity"].get("name", ""))
+                # Extract entity/protocol names
+                if to_addr.get("arkhamEntity"):
+                    contract_data["entity_names"].add(to_addr["arkhamEntity"].get("name", ""))
 
-            if to_addr.get("predictedEntity"):
-                contract_data["entity_names"].add(to_addr["predictedEntity"].get("name", ""))
-                tags = to_addr.get("predictedEntity", {}).get("populatedTags", [])
-                for tag in tags:
-                    contract_data["tags"].add(tag.get("label", ""))
+                if to_addr.get("predictedEntity"):
+                    contract_data["entity_names"].add(to_addr["predictedEntity"].get("name", ""))
+                    tags = to_addr.get("predictedEntity", {}).get("populatedTags", [])
+                    for tag in tags:
+                        contract_data["tags"].add(tag.get("label", ""))
 
-            # Track token transfers
-            if tx.get("tokenSymbol"):
-                contract_data["token_transfers"].append({
-                    "symbol": tx.get("tokenSymbol"),
-                    "value": tx.get("unitValue", 0),
-                    "usd": tx.get("historicalUSD", 0)
-                })
-                contract_data["total_usd"] += tx.get("historicalUSD", 0)
+                # Track token transfers
+                if tx.get("tokenSymbol"):
+                    contract_data["token_transfers"].append({
+                        "symbol": tx.get("tokenSymbol"),
+                        "value": tx.get("unitValue", 0),
+                        "usd": tx.get("historicalUSD", 0)
+                    })
+                    contract_data["total_usd"] += tx.get("historicalUSD", 0)
 
-            # Keep sample transactions
-            if len(contract_data["sample_txs"]) < 3:
-                contract_data["sample_txs"].append({
-                    "hash": tx.get("transactionHash"),
-                    "timestamp": tx.get("blockTimestamp"),
-                    "token": tx.get("tokenSymbol"),
-                    "value_usd": tx.get("historicalUSD", 0)
-                })
+                # Keep sample transactions
+                if len(contract_data["sample_txs"]) < 3:
+                    contract_data["sample_txs"].append({
+                        "hash": tx.get("transactionHash"),
+                        "timestamp": tx.get("blockTimestamp"),
+                        "token": tx.get("tokenSymbol"),
+                        "value_usd": tx.get("historicalUSD", 0),
+                        "direction": "outgoing"
+                    })
+
+            # Process INCOMING interactions
+            if from_contract and (from_is_contract or from_has_entity):
+                contract_data = contracts[from_contract.lower()]
+                contract_data["count"] += 1
+                contract_data["chains"].add(tx.get("chain", "unknown"))
+                contract_data["direction"].add("incoming")
+
+                # Extract entity/protocol names
+                if from_addr.get("arkhamEntity"):
+                    contract_data["entity_names"].add(from_addr["arkhamEntity"].get("name", ""))
+
+                if from_addr.get("predictedEntity"):
+                    contract_data["entity_names"].add(from_addr["predictedEntity"].get("name", ""))
+                    tags = from_addr.get("predictedEntity", {}).get("populatedTags", [])
+                    for tag in tags:
+                        contract_data["tags"].add(tag.get("label", ""))
+
+                # Track token transfers
+                if tx.get("tokenSymbol"):
+                    contract_data["token_transfers"].append({
+                        "symbol": tx.get("tokenSymbol"),
+                        "value": tx.get("unitValue", 0),
+                        "usd": tx.get("historicalUSD", 0)
+                    })
+                    contract_data["total_usd"] += tx.get("historicalUSD", 0)
+
+                # Keep sample transactions
+                if len(contract_data["sample_txs"]) < 3:
+                    contract_data["sample_txs"].append({
+                        "hash": tx.get("transactionHash"),
+                        "timestamp": tx.get("blockTimestamp"),
+                        "token": tx.get("tokenSymbol"),
+                        "value_usd": tx.get("historicalUSD", 0),
+                        "direction": "incoming"
+                    })
 
         # Convert sets to lists for JSON serialization
         for addr, data in contracts.items():
             data["chains"] = list(data["chains"])
             data["entity_names"] = list(data["entity_names"])
             data["tags"] = list(data["tags"])
+            data["direction"] = list(data["direction"])
             # Also ensure sample_txs is a list
             data["sample_txs"] = list(data["sample_txs"]) if isinstance(data["sample_txs"], set) else data["sample_txs"]
 
@@ -139,7 +176,7 @@ class ProtocolAnalyzer:
 
         return any(pm in all_text for pm in POLYMARKET_CONTRACTS)
 
-    def analyze_contracts_with_gemini(self, contracts: Dict[str, Dict[str, Any]], batch_size: int = 20) -> Dict[str, str]:
+    def analyze_contracts_with_gemini(self, contracts: Dict[str, Dict[str, Any]], batch_size: int = 100, full_data: bool = False) -> Dict[str, str]:
         """Use Gemini to identify protocols from contract interactions."""
         # Filter out Polymarket contracts
         non_pm_contracts = {
@@ -159,10 +196,29 @@ class ProtocolAnalyzer:
         for i in range(0, len(contract_list), batch_size):
             batch = contract_list[i:i+batch_size]
 
-            # Prepare contract summary for Gemini
-            contract_summaries = []
-            for addr, data in batch:
-                summary = f"""
+            # Prepare contract data for Gemini
+            if full_data:
+                # Send complete raw JSON data
+                # Deep copy and ensure all sets are converted to lists
+                contract_data_json = {}
+                for addr, data in batch:
+                    # Create a JSON-serializable copy
+                    data_copy = {}
+                    for key, value in data.items():
+                        if isinstance(value, set):
+                            data_copy[key] = list(value)
+                        elif isinstance(value, list):
+                            # Ensure nested sets in lists are also converted
+                            data_copy[key] = value
+                        else:
+                            data_copy[key] = value
+                    contract_data_json[addr] = data_copy
+                contracts_json_str = json.dumps(contract_data_json, indent=2)
+            else:
+                # Compact summary (original)
+                contract_summaries = []
+                for addr, data in batch:
+                    summary = f"""
 Contract: {addr}
 Chains: {', '.join(data['chains'])}
 Interactions: {data['count']} times
@@ -170,9 +226,36 @@ Total USD: ${data['total_usd']:,.2f}
 Entity Names: {', '.join(data['entity_names']) if data['entity_names'] else 'Unknown'}
 Tags: {', '.join(data['tags'][:5]) if data['tags'] else 'None'}
 """
-                contract_summaries.append(summary)
+                    contract_summaries.append(summary)
 
-            prompt = f"""You are a blockchain protocol expert. Analyze these contract interactions and identify what DeFi protocols, dApps, or services they represent.
+            if full_data:
+                prompt = f"""You are a blockchain protocol expert. Analyze the complete contract interaction data below and identify what DeFi protocols, dApps, or services they represent.
+
+The data includes:
+- Contract addresses
+- Entity names and tags from Arkham Intelligence
+- All transaction details (direction, chains, tokens, USD values, timestamps)
+- Token transfers
+
+For each contract address (the keys in the JSON), provide:
+1. The protocol/service name (e.g., "Uniswap", "Aave", "Coinbase", "Kraken")
+2. A brief category (e.g., "DEX", "Lending", "Bridge", "NFT", "Gaming", "CEX")
+
+Use all available information including entity_names, tags, token types, and transaction patterns to make accurate identifications.
+
+Contract Data (JSON):
+{contracts_json_str}
+
+Format your response as JSON with contract addresses as keys:
+{{
+  "0xabc...": {{"protocol": "Protocol Name", "category": "Category"}},
+  ...
+}}
+
+If you cannot identify a contract, use "Unknown" for both fields.
+"""
+            else:
+                prompt = f"""You are a blockchain protocol expert. Analyze these contract interactions and identify what DeFi protocols, dApps, or services they represent.
 
 For each contract, provide:
 1. The protocol/service name (e.g., "Uniswap", "Aave", "Bridge Protocol")
@@ -194,27 +277,49 @@ If you cannot identify a contract, use "Unknown" for both fields.
                 response = self.model.generate_content(prompt)
 
                 # Parse JSON response
+                if not response or not response.text:
+                    raise ValueError("Empty response from Gemini")
+
                 response_text = response.text.strip()
+
                 # Remove markdown code blocks if present
                 if response_text.startswith("```"):
-                    response_text = response_text.split("```")[1]
+                    # Split by ``` and get the content between first and second ```
+                    parts = response_text.split("```")
+                    if len(parts) >= 3:
+                        response_text = parts[1]
+                    elif len(parts) >= 2:
+                        response_text = parts[1]
+                    # Remove 'json' prefix if present
                     if response_text.startswith("json"):
-                        response_text = response_text[4:]
+                        response_text = response_text[4:].strip()
 
-                batch_results = json.loads(response_text.strip())
+                response_text = response_text.strip()
+
+                if not response_text:
+                    raise ValueError("Response text is empty after cleaning")
+
+                # Try to parse JSON
+                try:
+                    batch_results = json.loads(response_text)
+                except json.JSONDecodeError as je:
+                    # Print first 500 chars of response for debugging
+                    print(f"  ⚠️  JSON parse error. Response preview: {response_text[:500]}")
+                    raise je
+
                 protocol_results.update(batch_results)
 
                 print(f"  ✓ Processed batch {i//batch_size + 1}/{(len(contract_list)-1)//batch_size + 1}")
 
             except Exception as e:
-                print(f"  ⚠️  Error processing batch: {e}")
+                print(f"  ⚠️  Error processing batch {i//batch_size + 1}: {str(e)[:200]}")
                 # Add as unknown if parsing fails
                 for addr, _ in batch:
                     protocol_results[addr] = {"protocol": "Unknown", "category": "Unknown"}
 
         return protocol_results
 
-    def analyze_wallet(self, proxy_wallet: str, main_wallet: str = None) -> Dict[str, Any]:
+    def analyze_wallet(self, proxy_wallet: str, main_wallet: str = None, full_data: bool = False) -> Dict[str, Any]:
         """Analyze a single wallet's protocol usage."""
         wallet_to_analyze = main_wallet if main_wallet else proxy_wallet
 
@@ -234,7 +339,7 @@ If you cannot identify a contract, use "Unknown" for both fields.
         print(f"✓ Found {len(contracts)} unique contract interactions")
 
         # Analyze with Gemini
-        protocol_analysis = self.analyze_contracts_with_gemini(contracts)
+        protocol_analysis = self.analyze_contracts_with_gemini(contracts, full_data=full_data)
 
         # Combine results
         results = {
@@ -302,7 +407,7 @@ If you cannot identify a contract, use "Unknown" for both fields.
 
         return results
 
-    def analyze_all_wallets(self) -> List[Dict[str, Any]]:
+    def analyze_all_wallets(self, full_data: bool = False) -> List[Dict[str, Any]]:
         """Analyze all mapped wallets."""
         all_results = []
 
@@ -314,7 +419,7 @@ If you cannot identify a contract, use "Unknown" for both fields.
                 print(f"\n⏭️  Skipping {proxy_wallet} (CEX deposit)")
                 continue
 
-            result = self.analyze_wallet(proxy_wallet, main_wallet)
+            result = self.analyze_wallet(proxy_wallet, main_wallet, full_data=full_data)
             all_results.append(result)
 
         return all_results
@@ -562,6 +667,23 @@ def main():
         action="store_true",
         help="Analyze all wallets"
     )
+    parser.add_argument(
+        "--missing",
+        action="store_true",
+        help="Analyze only wallets with data files but no .protocols.md file"
+    )
+    parser.add_argument(
+        "--model",
+        type=str,
+        default="gemini-3-pro-preview",
+        choices=["gemini-3-pro-preview", "gemini-2.5-flash", "gemini-2.0-flash-exp", "gemini-2.5-pro"],
+        help="Gemini model to use for analysis (default: gemini-3-pro-preview)"
+    )
+    parser.add_argument(
+        "--full-data",
+        action="store_true",
+        help="Send detailed transaction data to Gemini for richer analysis (uses more tokens/cost)"
+    )
 
     args = parser.parse_args()
 
@@ -573,7 +695,13 @@ def main():
     # Markdown reports go in data folder
     md_output_dir = data_dir
 
-    analyzer = ProtocolAnalyzer(data_dir)
+    analyzer = ProtocolAnalyzer(data_dir, model_name=args.model)
+
+    # Print which model we're using
+    print(f"🤖 Using Gemini model: {args.model}")
+    if args.full_data:
+        print(f"⚠️  Full data mode enabled - will use more tokens/cost")
+    print()
 
     if args.wallet:
         # Analyze single wallet
@@ -590,7 +718,7 @@ def main():
             print(f"⚠️  Wallet {wallet} not found in mappings. Using it as-is.")
             proxy_wallet = wallet
 
-        result = analyzer.analyze_wallet(proxy_wallet, wallet if wallet != proxy_wallet else None)
+        result = analyzer.analyze_wallet(proxy_wallet, wallet if wallet != proxy_wallet else None, full_data=args.full_data)
 
         # Save JSON result (exclude raw data to avoid serialization issues)
         json_result = {k: v for k, v in result.items() if k not in ["raw_contracts", "protocol_analysis"]}
@@ -621,7 +749,7 @@ def main():
 
     elif args.all:
         # Analyze all wallets
-        results = analyzer.analyze_all_wallets()
+        results = analyzer.analyze_all_wallets(full_data=args.full_data)
 
         # Save individual results with both JSON and markdown
         for result in results:
@@ -642,6 +770,79 @@ def main():
         # Generate comprehensive report
         summary_file = output_dir.parent / "parlay_user_protocol_analysis.txt"
         analyzer.generate_report(results, summary_file)
+
+    elif args.missing:
+        # Find all .json files in data directory that don't have .protocols.md files
+        print("Scanning for wallets with data but no protocol analysis...\n", flush=True)
+
+        print(f"Looking in directory: {data_dir}", flush=True)
+        json_files = list(data_dir.glob("*.json"))
+        print(f"Found {len(json_files)} .json files", flush=True)
+        wallets_to_process = []
+
+        for json_file in json_files:
+            wallet_address = json_file.stem  # filename without extension
+            md_file = data_dir / f"{wallet_address}.protocols.md"
+
+            # Check if .protocols.md file exists
+            if not md_file.exists():
+                wallets_to_process.append(wallet_address)
+
+        if not wallets_to_process:
+            print("✅ All wallets with data files have been analyzed!")
+            print(f"   Found {len(json_files)} .json files, all have corresponding .protocols.md files\n")
+            return
+
+        print(f"📊 Found {len(wallets_to_process)} wallet(s) to analyze (out of {len(json_files)} total)")
+        print("-" * 80)
+        for i, wallet in enumerate(wallets_to_process, 1):
+            print(f"  {i}. {wallet}")
+        print("-" * 80 + "\n")
+
+        # Process each wallet
+        results = []
+        for i, wallet_address in enumerate(wallets_to_process, 1):
+            print(f"\n[{i}/{len(wallets_to_process)}] Processing {wallet_address}...")
+
+            # Find proxy wallet for this main wallet
+            proxy_wallet = None
+            for proxy, info in WALLET_MAPPINGS.items():
+                if info.get("main_wallet", "").lower() == wallet_address.lower():
+                    proxy_wallet = proxy
+                    break
+
+            if not proxy_wallet:
+                # Use wallet address as both proxy and main
+                proxy_wallet = wallet_address
+
+            result = analyzer.analyze_wallet(
+                proxy_wallet,
+                wallet_address if wallet_address != proxy_wallet else None,
+                full_data=args.full_data
+            )
+
+            if "error" not in result:
+                # Save JSON result
+                json_result = {k: v for k, v in result.items() if k not in ["raw_contracts", "protocol_analysis"]}
+                json_file = output_dir / f"{wallet_address}_protocol_analysis.json"
+                with open(json_file, 'w') as f:
+                    json.dump(json_result, f, indent=2)
+
+                # Generate markdown report
+                md_file = data_dir / f"{wallet_address}.protocols.md"
+                analyzer.generate_markdown_report(result, md_file)
+
+                results.append(result)
+
+        print(f"\n{'='*80}")
+        print(f"✅ Successfully analyzed {len(results)} wallet(s)")
+        print(f"{'='*80}\n")
+
+        # Show summary
+        for result in results:
+            wallet = result.get("main_wallet") or result.get("proxy_wallet")
+            num_protocols = len(result.get("protocols", []))
+            print(f"  • {wallet}: {num_protocols} protocols identified")
 
     else:
         # List available wallets
@@ -665,6 +866,14 @@ def main():
         print("Usage:")
         print("  Analyze single wallet:  python analyze_parlay_user_protocols.py --wallet 0xADDRESS")
         print("  Analyze all wallets:    python analyze_parlay_user_protocols.py --all")
+        print("  Analyze missing only:   python analyze_parlay_user_protocols.py --missing")
+        print("\nModel Selection:")
+        print("  --model gemini-3-pro-preview     (default, best quality)")
+        print("  --model gemini-2.5-flash         (faster, cheaper)")
+        print("  --model gemini-2.0-flash-exp     (experimental)")
+        print("  --model gemini-2.5-pro           (balanced)")
+        print("\nData Mode:")
+        print("  --full-data                      Send detailed transaction data (more tokens/cost)")
         print("="*110 + "\n")
 
 
