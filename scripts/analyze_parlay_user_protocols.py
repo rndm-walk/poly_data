@@ -252,7 +252,7 @@ Format your response as JSON with contract addresses as keys:
   ...
 }}
 
-If you cannot identify a contract, use "Unknown" for both fields.
+IMPORTANT: Only include contracts you can confidently identify. Skip any contracts you cannot identify - do not include them in the response.
 """
             else:
                 prompt = f"""You are a blockchain protocol expert. Analyze these contract interactions and identify what DeFi protocols, dApps, or services they represent.
@@ -270,7 +270,7 @@ Format your response as JSON with contract addresses as keys:
   ...
 }}
 
-If you cannot identify a contract, use "Unknown" for both fields.
+IMPORTANT: Only include contracts you can confidently identify. Skip any contracts you cannot identify - do not include them in the response.
 """
 
             try:
@@ -313,9 +313,8 @@ If you cannot identify a contract, use "Unknown" for both fields.
 
             except Exception as e:
                 print(f"  ⚠️  Error processing batch {i//batch_size + 1}: {str(e)[:200]}")
-                # Add as unknown if parsing fails
-                for addr, _ in batch:
-                    protocol_results[addr] = {"protocol": "Unknown", "category": "Unknown"}
+                # Skip contracts that fail to parse - don't add them as "Unknown"
+                print(f"  ⚠️  Skipping {len(batch)} contracts from failed batch")
 
         return protocol_results
 
