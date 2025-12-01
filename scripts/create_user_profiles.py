@@ -36,7 +36,7 @@ genai.configure(api_key=GEMINI_API_KEY)
 
 
 class UserProfiler:
-    def __init__(self, project_root: Path, model_name: str = "gemini-2.0-flash-exp"):
+    def __init__(self, project_root: Path, model_name: str = "gemini-3-pro-preview"):
         self.project_root = project_root
         self.model = genai.GenerativeModel(model_name)
         self.data_dir = project_root / "data"
@@ -93,6 +93,15 @@ class UserProfiler:
         if wallet_info and "main_wallet" in wallet_info:
             main_wallet = wallet_info["main_wallet"]
             json_path = self.processed_dir / "protocol_analysis" / f"{main_wallet}_protocol_analysis.json"
+
+            # Case-insensitive file lookup if exact match doesn't exist
+            if not json_path.exists():
+                import glob
+                pattern = str(json_path).lower()
+                for file in glob.glob(str(self.processed_dir / "protocol_analysis" / "*_protocol_analysis.json")):
+                    if file.lower() == pattern:
+                        json_path = Path(file)
+                        break
         else:
             # Try as-is (might be a main wallet directly or CEX user)
             json_path = self.processed_dir / "protocol_analysis" / f"{proxy_wallet}_protocol_analysis.json"
@@ -270,7 +279,17 @@ Keep it concise and insightful. Focus on actionable observations.
 
         if wallet_info and "main_wallet" in wallet_info:
             main_wallet = wallet_info["main_wallet"]
+            # Case-insensitive file lookup
+            # Try exact match first
             md_path = self.data_dir / f"{main_wallet}.protocols.md"
+            if not md_path.exists():
+                # Try finding file with case-insensitive match
+                import glob
+                pattern = str(self.data_dir / f"{main_wallet}.protocols.md").lower()
+                for file in glob.glob(str(self.data_dir / "*.protocols.md")):
+                    if file.lower() == pattern:
+                        md_path = Path(file)
+                        break
         else:
             # Try as-is
             md_path = self.data_dir / f"{proxy_wallet}.protocols.md"
@@ -497,6 +516,13 @@ def main():
         default=20,
         help="Number of top users to process (default: 20)"
     )
+    parser.add_argument(
+        "--model",
+        type=str,
+        default="gemini-3-pro-preview",
+        choices=["gemini-3-pro-preview", "gemini-2.5-flash", "gemini-2.0-flash-exp", "gemini-2.5-pro"],
+        help="Gemini model to use for analysis (default: gemini-3-pro-preview)"
+    )
 
     args = parser.parse_args()
 
@@ -504,7 +530,7 @@ def main():
     output_dir = project_root / "data" / "user_profiles"
     output_dir.mkdir(exist_ok=True)
 
-    profiler = UserProfiler(project_root)
+    profiler = UserProfiler(project_root, model_name=args.model)
 
     if args.wallet:
         # Single wallet
@@ -523,33 +549,64 @@ def main():
             .head(args.top_n)
         )
 
+        # Filter to only include users in wallet mappings with main wallets
+        users_to_process = []
+        skipped_not_mapped = []
+        skipped_no_main_wallet = []
+
+        for row in top_users.iter_rows(named=True):
+            user_address = row['user']
+            if user_address.lower() not in WALLET_MAPPINGS:
+                skipped_not_mapped.append(user_address)
+            elif 'main_wallet' not in WALLET_MAPPINGS[user_address.lower()]:
+                # Skip CEX/Bridge sources - they don't have main wallets
+                skipped_no_main_wallet.append(user_address)
+            else:
+                users_to_process.append(row)
+
         print(f"\n{'='*80}")
         print(f"Generating profiles for top {args.top_n} parlay users")
         print(f"{'='*80}\n")
 
+        if skipped_not_mapped:
+            print(f"⚠️  Skipping {len(skipped_not_mapped)} wallets not in mappings (Polymarket contracts):")
+            for addr in skipped_not_mapped:
+                print(f"   - {addr}")
+            print()
+
+        if skipped_no_main_wallet:
+            print(f"⚠️  Skipping {len(skipped_no_main_wallet)} CEX/Bridge wallets (no main wallet):")
+            for addr in skipped_no_main_wallet:
+                info = WALLET_MAPPINGS.get(addr.lower(), {})
+                source = info.get('source', 'Unknown')
+                print(f"   - {addr} ({source})")
+            print()
+
+        print(f"Processing {len(users_to_process)} wallets with main wallet mappings...\n")
+
         success_count = 0
-        for i, row in enumerate(top_users.iter_rows(named=True), 1):
+        for i, row in enumerate(users_to_process, 1):
             user_address = row['user']
 
             # Check if already exists
             output_file = output_dir / f"{user_address}.profile.md"
             if output_file.exists():
-                print(f"\n[{i}/{args.top_n}] ✓ Skipping {user_address} (already exists)")
+                print(f"\n[{i}/{len(users_to_process)}] ✓ Skipping {user_address} (already exists)")
                 success_count += 1
                 continue
 
-            print(f"\n[{i}/{args.top_n}] Processing {user_address}")
+            print(f"\n[{i}/{len(users_to_process)}] Processing {user_address}")
 
             if profiler.generate_user_profile(user_address, output_file):
                 success_count += 1
 
             # Small delay to avoid rate limiting
-            if i < len(top_users):
+            if i < len(users_to_process):
                 import time
                 time.sleep(1)
 
         print(f"\n{'='*80}")
-        print(f"✅ Generated {success_count}/{args.top_n} user profiles")
+        print(f"✅ Generated {success_count}/{len(users_to_process)} user profiles (from wallets in mappings)")
         print(f"{'='*80}")
         print(f"\nProfiles saved to: {output_dir}/")
         print(f"\nTo view a profile:")
